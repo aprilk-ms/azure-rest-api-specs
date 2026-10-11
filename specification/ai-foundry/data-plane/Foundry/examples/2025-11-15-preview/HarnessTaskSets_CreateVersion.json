@@ -9,9 +9,9 @@
       "tasks": [
         {
           "id": "covered-water-damage",
-          "name": "Covered water damage",
           "inputs": {
-            "text": "Review claim 12345 and cite the applicable policy."
+            "type": "prompt",
+            "instruction": "Review claim 12345 and cite the applicable policy."
           },
           "expected": {
             "policy_citation": "Section I - Perils Insured Against"
@@ -36,12 +36,14 @@
       "body": {
         "name": "claims-regression",
         "version": "1",
+        "created_at": 1791524400,
+        "created_by": "user@contoso.com",
         "tasks": [
           {
             "id": "covered-water-damage",
-            "name": "Covered water damage",
             "inputs": {
-              "text": "Review claim 12345 and cite the applicable policy."
+              "type": "prompt",
+              "instruction": "Review claim 12345 and cite the applicable policy."
             },
             "expected": {
               "policy_citation": "Section I - Perils Insured Against"

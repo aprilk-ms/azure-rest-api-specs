@@ -19,8 +19,8 @@ model FoundryAgentReference {
 union EvaluationHarnessType {
   string,
 
-  /** Invoke a versioned Foundry agent. */
-  foundry_agent: "foundry_agent",
+  /** Invoke a versioned Foundry agent with an inline harness definition. */
+  inline_foundry_agent_harness: "inline_foundry_agent_harness",
 }
 
 /** The harness used to execute evaluation tasks. */
@@ -31,11 +31,11 @@ model EvaluationHarness {
   type: EvaluationHarnessType;
 }
 
-/** A harness that invokes a versioned Foundry agent. */
+/** An inline harness that invokes a versioned Foundry agent. */
 @extension("x-ms-foundry-meta", EvaluationServiceV2RequiredPreviews)
-model FoundryAgentHarness extends EvaluationHarness {
-  /** Indicates that this harness invokes a Foundry agent. */
-  type: EvaluationHarnessType.foundry_agent;
+model InlineFoundryAgentHarness extends EvaluationHarness {
+  /** Indicates an inline Foundry-agent harness. */
+  type: EvaluationHarnessType.inline_foundry_agent_harness;
 
   /** The exact agent version to invoke. */
   agent: FoundryAgentReference;

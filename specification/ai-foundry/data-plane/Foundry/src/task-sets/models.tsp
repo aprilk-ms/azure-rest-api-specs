@@ -28,7 +28,7 @@ union EvaluationGraderType {
 @discriminator("type")
 @extension("x-ms-foundry-meta", EvaluationServiceV2RequiredPreviews)
 model EvaluationGrader {
-  /** The grader name, unique within its task or evaluation suite. */
+  /** The grader name, unique among graders applicable to the same task. */
   name: string;
 
   /** The grader type. */
@@ -51,12 +51,19 @@ model LlmJudgeGrader extends EvaluationGrader {
   /** Indicates that this grader uses a language model. */
   type: EvaluationGraderType.llm_judge;
 
-  /** The model deployment used by the judge. */
-  model_deployment: string;
+  /** The model selected to judge this grader. */
+  model_config: EvaluationJudgeModelConfig;
 
   /** The criteria evaluated by the judge. */
   @minItems(1)
   criteria: LlmJudgeCriterion[];
+}
+
+/** The model chosen for one language-model grader. */
+@extension("x-ms-foundry-meta", EvaluationServiceV2RequiredPreviews)
+model EvaluationJudgeModelConfig {
+  /** The model to use when evaluating the grader. */
+  `model`: string;
 }
 
 /** The supported deterministic grader operators. */
@@ -116,32 +123,87 @@ union InlineEvaluationGrader {
   DeterministicGrader,
 }
 
+/** The rule for combining applicable grader verdicts. */
+@extension("x-ms-foundry-meta", EvaluationServiceV2RequiredPreviews)
+model ScoringRule {
+  /** A task run passes only when every applicable grader passes. */
+  aggregation: "all_pass";
+}
+
+/** Text content supplied to a task or its graders. */
+@extension("x-ms-foundry-meta", EvaluationServiceV2RequiredPreviews)
+model EvaluationTextContent {
+  /** Indicates text content. */
+  type: "text";
+
+  /** The text value. */
+  value: string;
+}
+
+/** JSON content supplied to a task or its graders. */
+@extension("x-ms-foundry-meta", EvaluationServiceV2RequiredPreviews)
+model EvaluationJsonContent {
+  /** Indicates JSON content. */
+  type: "json";
+
+  /** The JSON value. */
+  value: unknown;
+}
+
+/** Task content, including shorthand strings and JSON objects. */
+@extension("x-ms-foundry-meta", EvaluationServiceV2RequiredPreviews)
+union EvaluationTaskContent {
+  /** A text value without a content wrapper. */
+  shorthand_text: string,
+
+  /** A JSON object without a content wrapper. */
+  shorthand_json: Record<unknown>,
+
+  /** A typed text value. */
+  text: EvaluationTextContent,
+
+  /** A typed JSON value. */
+  json: EvaluationJsonContent,
+}
+
+/** The single-prompt input mode supported in the MVP. */
+@extension("x-ms-foundry-meta", EvaluationServiceV2RequiredPreviews)
+model PromptTaskInput {
+  /** Indicates a single prompt invocation. */
+  type: "prompt";
+
+  /** The prompt delivered to the agent. */
+  @minLength(1)
+  instruction: string;
+
+  /** Additional named context visible to the agent. */
+  data?: Record<EvaluationTaskContent>;
+}
+
 /** A reusable evaluation task. */
 @extension("x-ms-foundry-meta", EvaluationServiceV2RequiredPreviews)
 model HarnessTask {
   /** The task identifier, unique within the task-set version. */
+  @minLength(1)
   id: string;
-
-  /** The human-readable task name. */
-  name: string;
 
   /** A description of the behavior being evaluated. */
   description?: string;
 
-  /** The starting request or state provided to the harness. */
-  inputs: Record<unknown>;
+  /** The prompt and optional context provided to the agent. */
+  inputs: PromptTaskInput;
 
-  /** Expected values available to deterministic and language-model graders. */
-  expected?: Record<unknown>;
+  /** Reference values visible to graders but not to the agent. */
+  expected?: Record<EvaluationTaskContent>;
 
   /** Task-level graders applied in addition to suite-level graders. */
   graders?: InlineEvaluationGrader[];
 
-  /** User-defined task metadata. */
+  /** Caller-defined JSON annotations visible to graders. */
   metadata?: Record<unknown>;
 
-  /** Reserved for future multi-step tasks; rejected in the MVP. */
-  steps?: unknown[];
+  /** The rule used to combine task and suite grader verdicts for this task. */
+  scoring?: ScoringRule;
 }
 
 /** Task definitions supplied with a one-off inline suite. */
@@ -166,14 +228,22 @@ model HarnessTaskSetVersion {
   version: string;
 
   /** The task-set description. */
-  @visibility(Lifecycle.Create, Lifecycle.Update)
+  @visibility(Lifecycle.Create, Lifecycle.Read, Lifecycle.Update)
   description?: string;
 
   /** The tasks contained in this version. */
   @minItems(1)
   tasks: HarnessTask[];
 
-  /** User-defined tags. */
-  @visibility(Lifecycle.Create, Lifecycle.Update)
-  tags?: Record<string>;
+  /** User-defined string labels for this task-set version. */
+  @visibility(Lifecycle.Create, Lifecycle.Read, Lifecycle.Update)
+  metadata?: Record<string>;
+
+  /** The time when this version was published. */
+  @visibility(Lifecycle.Read)
+  created_at: FoundryTimestamp;
+
+  /** The identity that published this version. */
+  @visibility(Lifecycle.Read)
+  created_by: string;
 }

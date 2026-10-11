@@ -14,7 +14,6 @@
         "eval_run_id": "evalrun_01J9Z7F6J2",
         "task": {
           "id": "covered-water-damage",
-          "name": "Covered water damage",
           "description": "Review the claim and cite the applicable policy."
         },
         "repetition": 2,
@@ -40,8 +39,8 @@
             "media_type": "application/json"
           }
         ],
-        "started_at": "2026-10-09T05:40:22Z",
-        "completed_at": "2026-10-09T05:40:27Z"
+        "started_at": 1791524422,
+        "completed_at": 1791524427
       }
     }
   }

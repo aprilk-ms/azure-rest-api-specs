@@ -52,7 +52,7 @@ model EvalRunResult {
 model FoundryEvalRun is JobLike<EvalRunResult, EvalRunInputs> {
   /** The effective harness and exact agent reference after run overrides. */
   @visibility(Lifecycle.Read)
-  resolved_harness_config: FoundryAgentHarness;
+  resolved_harness_config: InlineFoundryAgentHarness;
 
   /** The effective execution mode and attempt limits after run overrides. */
   @visibility(Lifecycle.Read)
@@ -60,15 +60,15 @@ model FoundryEvalRun is JobLike<EvalRunResult, EvalRunInputs> {
 
   /** The time when the run was accepted. */
   @visibility(Lifecycle.Read)
-  created_at: utcDateTime;
+  created_at: FoundryTimestamp;
 
   /** The time when execution started. */
   @visibility(Lifecycle.Read)
-  started_at?: utcDateTime;
+  started_at?: FoundryTimestamp;
 
   /** The time when the run reached a terminal state. */
   @visibility(Lifecycle.Read)
-  completed_at?: utcDateTime;
+  completed_at?: FoundryTimestamp;
 }
 
 /** A readable task summary retained with a task run. */
@@ -76,9 +76,6 @@ model FoundryEvalRun is JobLike<EvalRunResult, EvalRunInputs> {
 model EvaluationTaskSummary {
   /** The task identifier. */
   id: string;
-
-  /** The task name. */
-  name: string;
 
   /** The task description. */
   description?: string;
@@ -238,7 +235,7 @@ model EvaluationTaskRunError {
   exception_type?: string;
 
   /** The time when the failure occurred. */
-  occurred_at?: utcDateTime;
+  occurred_at?: FoundryTimestamp;
 
   /** Whether another attempt might succeed, regardless of remaining service-policy retries. */
   retriable: boolean;
@@ -287,10 +284,10 @@ model EvalTaskRun {
   error?: EvaluationTaskRunError;
 
   /** The time when execution started. */
-  started_at?: utcDateTime;
+  started_at?: FoundryTimestamp;
 
   /** The time when the task run reached a terminal state. */
-  completed_at?: utcDateTime;
+  completed_at?: FoundryTimestamp;
 }
 
 /** A normalized ATIF trajectory. */

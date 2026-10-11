@@ -103,7 +103,24 @@ interface EvalSuites {
     AgentsPagedResult<EvalSuiteVersion>
   >;
 
-  /** Creates an EvalSuite version with a service-generated version identifier. */
+  /** Creates an EvalSuite if absent, or appends a version only when its complete definition changes. */
+  @summary("Reconcile an EvalSuite")
+  @post
+  @route("/eval_suites/{name}")
+  @extension("x-ms-foundry-meta", EvaluationServiceV2RequiredPreviews)
+  reconcile is FoundryDataPlanePreviewOperation<
+    FoundryFeaturesOptInKeys.evaluations_v1_preview,
+    {
+      /** The stable EvalSuite name. */
+      @path name: string;
+
+      /** The complete definition to publish if changed. */
+      @bodyRoot eval_suite: EvalSuiteVersion;
+    },
+    Foundations.ResourceCreatedOrOkResponse<EvalSuiteVersion>
+  >;
+
+  /** Always appends an EvalSuite version with a service-assigned identifier. */
   @summary("Create an EvalSuite version")
   @post
   @route("/eval_suites/{name}/versions")
@@ -118,26 +135,6 @@ interface EvalSuites {
       @bodyRoot eval_suite: EvalSuiteVersion;
     },
     Response<201> & EvalSuiteVersion
-  >;
-
-  /** Creates or verifies an explicitly versioned EvalSuite definition. */
-  @summary("Create or verify an EvalSuite version")
-  @put
-  @route("/eval_suites/{name}/versions/{version}")
-  @extension("x-ms-foundry-meta", EvaluationServiceV2RequiredPreviews)
-  createOrReplaceVersion is FoundryDataPlanePreviewOperation<
-    FoundryFeaturesOptInKeys.evaluations_v1_preview,
-    {
-      /** The EvalSuite name. */
-      @path name: string;
-
-      /** The exact version identifier. */
-      @path version: string;
-
-      /** The complete suite definition to publish or verify. */
-      @bodyRoot eval_suite: EvalSuiteVersion;
-    },
-    Foundations.ResourceCreatedOrOkResponse<EvalSuiteVersion>
   >;
 
   /** Lists every version of an EvalSuite. */

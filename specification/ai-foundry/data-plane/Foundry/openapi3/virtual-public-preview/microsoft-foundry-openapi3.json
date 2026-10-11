@@ -12291,11 +12291,112 @@
         }
       }
     },
+    "/eval_suites/{name}": {
+      "post": {
+        "operationId": "EvalSuites_reconcile",
+        "summary": "Reconcile an EvalSuite",
+        "description": "Creates an EvalSuite if absent, or appends a version only when its complete definition changes.",
+        "parameters": [
+          {
+            "name": "Foundry-Features",
+            "in": "header",
+            "required": false,
+            "description": "A feature flag opt-in required when using preview operations or modifying persisted preview resources.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "Evaluations=V1Preview"
+              ]
+            }
+          },
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "description": "The stable EvalSuite name.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "api-version",
+            "in": "query",
+            "required": true,
+            "description": "The API version to use for this operation.",
+            "schema": {
+              "type": "string"
+            },
+            "explode": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EvalSuiteVersion"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "The request has succeeded and a new resource has been created as a result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EvalSuiteVersion"
+                }
+              }
+            }
+          },
+          "4XX": {
+            "description": "Client error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          },
+          "5XX": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "EvalSuites"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EvalSuiteVersion"
+              }
+            }
+          },
+          "description": "The complete definition to publish if changed."
+        },
+        "x-ms-foundry-meta": {
+          "conditional_previews": [
+            "Evaluations=V1Preview"
+          ]
+        }
+      }
+    },
     "/eval_suites/{name}/versions": {
       "post": {
         "operationId": "EvalSuites_createVersion",
         "summary": "Create an EvalSuite version",
-        "description": "Creates an EvalSuite version with a service-generated version identifier.",
+        "description": "Always appends an EvalSuite version with a service-assigned identifier.",
         "parameters": [
           {
             "name": "Foundry-Features",
@@ -12369,7 +12470,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/EvalSuiteVersionCreate"
+                "$ref": "#/components/schemas/EvalSuiteVersion"
               }
             }
           },
@@ -12529,114 +12630,6 @@
       }
     },
     "/eval_suites/{name}/versions/{version}": {
-      "put": {
-        "operationId": "EvalSuites_createOrReplaceVersion",
-        "summary": "Create or verify an EvalSuite version",
-        "description": "Creates or verifies an explicitly versioned EvalSuite definition.",
-        "parameters": [
-          {
-            "name": "Foundry-Features",
-            "in": "header",
-            "required": false,
-            "description": "A feature flag opt-in required when using preview operations or modifying persisted preview resources.",
-            "schema": {
-              "type": "string",
-              "enum": [
-                "Evaluations=V1Preview"
-              ]
-            }
-          },
-          {
-            "name": "name",
-            "in": "path",
-            "required": true,
-            "description": "The EvalSuite name.",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "version",
-            "in": "path",
-            "required": true,
-            "description": "The exact version identifier.",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "api-version",
-            "in": "query",
-            "required": true,
-            "description": "The API version to use for this operation.",
-            "schema": {
-              "type": "string"
-            },
-            "explode": false
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "The request has succeeded.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EvalSuiteVersion"
-                }
-              }
-            }
-          },
-          "201": {
-            "description": "The request has succeeded and a new resource has been created as a result.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EvalSuiteVersion"
-                }
-              }
-            }
-          },
-          "4XX": {
-            "description": "Client error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponse"
-                }
-              }
-            }
-          },
-          "5XX": {
-            "description": "Server error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponse"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "EvalSuites"
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/EvalSuiteVersionCreateOrUpdate"
-              }
-            }
-          },
-          "description": "The complete suite definition to publish or verify."
-        },
-        "x-ms-foundry-meta": {
-          "conditional_previews": [
-            "Evaluations=V1Preview"
-          ]
-        }
-      },
       "get": {
         "operationId": "EvalSuites_getVersion",
         "summary": "Get an EvalSuite version",
@@ -17891,11 +17884,112 @@
         }
       }
     },
+    "/harness_task_sets/{name}": {
+      "post": {
+        "operationId": "HarnessTaskSets_reconcile",
+        "summary": "Reconcile a harness task set",
+        "description": "Creates a task set if absent, or appends a version only when its complete definition changes.",
+        "parameters": [
+          {
+            "name": "Foundry-Features",
+            "in": "header",
+            "required": false,
+            "description": "A feature flag opt-in required when using preview operations or modifying persisted preview resources.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "Evaluations=V1Preview"
+              ]
+            }
+          },
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "description": "The stable task-set name.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "api-version",
+            "in": "query",
+            "required": true,
+            "description": "The API version to use for this operation.",
+            "schema": {
+              "type": "string"
+            },
+            "explode": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HarnessTaskSetVersion"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "The request has succeeded and a new resource has been created as a result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HarnessTaskSetVersion"
+                }
+              }
+            }
+          },
+          "4XX": {
+            "description": "Client error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          },
+          "5XX": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "HarnessTaskSets"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HarnessTaskSetVersion"
+              }
+            }
+          },
+          "description": "The complete definition to publish if changed."
+        },
+        "x-ms-foundry-meta": {
+          "conditional_previews": [
+            "Evaluations=V1Preview"
+          ]
+        }
+      }
+    },
     "/harness_task_sets/{name}/versions": {
       "post": {
         "operationId": "HarnessTaskSets_createVersion",
         "summary": "Create a harness task-set version",
-        "description": "Creates a task-set version with a service-generated version identifier.",
+        "description": "Always appends a task-set version with a service-assigned identifier.",
         "parameters": [
           {
             "name": "Foundry-Features",
@@ -17969,7 +18063,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/HarnessTaskSetVersionCreate"
+                "$ref": "#/components/schemas/HarnessTaskSetVersion"
               }
             }
           },
@@ -18129,114 +18223,6 @@
       }
     },
     "/harness_task_sets/{name}/versions/{version}": {
-      "put": {
-        "operationId": "HarnessTaskSets_createOrReplaceVersion",
-        "summary": "Create or verify a harness task-set version",
-        "description": "Creates an explicitly versioned task set or verifies that an existing version has the same definition.",
-        "parameters": [
-          {
-            "name": "Foundry-Features",
-            "in": "header",
-            "required": false,
-            "description": "A feature flag opt-in required when using preview operations or modifying persisted preview resources.",
-            "schema": {
-              "type": "string",
-              "enum": [
-                "Evaluations=V1Preview"
-              ]
-            }
-          },
-          {
-            "name": "name",
-            "in": "path",
-            "required": true,
-            "description": "The task-set name.",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "version",
-            "in": "path",
-            "required": true,
-            "description": "The exact version identifier.",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "api-version",
-            "in": "query",
-            "required": true,
-            "description": "The API version to use for this operation.",
-            "schema": {
-              "type": "string"
-            },
-            "explode": false
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "The request has succeeded.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HarnessTaskSetVersion"
-                }
-              }
-            }
-          },
-          "201": {
-            "description": "The request has succeeded and a new resource has been created as a result.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HarnessTaskSetVersion"
-                }
-              }
-            }
-          },
-          "4XX": {
-            "description": "Client error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponse"
-                }
-              }
-            }
-          },
-          "5XX": {
-            "description": "Server error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponse"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "HarnessTaskSets"
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/HarnessTaskSetVersionCreateOrUpdate"
-              }
-            }
-          },
-          "description": "The task-set version to create or reconcile."
-        },
-        "x-ms-foundry-meta": {
-          "conditional_previews": [
-            "Evaluations=V1Preview"
-          ]
-        }
-      },
       "get": {
         "operationId": "HarnessTaskSets_getVersion",
         "summary": "Get a harness task-set version",
@@ -48504,12 +48490,16 @@
         "type": "object",
         "properties": {
           "harness_config": {
-            "$ref": "#/components/schemas/FoundryAgentHarness",
+            "$ref": "#/components/schemas/InlineFoundryAgentHarness",
             "description": "A complete harness and exact agent reference replacing the suite's harness."
           },
           "execution_config": {
             "$ref": "#/components/schemas/EvalExecutionConfigOverrides",
             "description": "Execution fields to replace; omitted fields inherit the suite defaults."
+          },
+          "harness_task_set": {
+            "$ref": "#/components/schemas/HarnessTaskSetReference",
+            "description": "Another exact version of the same HarnessTaskSet used by the published suite."
           }
         },
         "description": "Configuration replacements applied only to a run of a published suite.",
@@ -48550,7 +48540,9 @@
           "execution_config",
           "name",
           "version",
-          "harness_task_set"
+          "harness_task_set",
+          "created_at",
+          "created_by"
         ],
         "properties": {
           "graders": {
@@ -48565,7 +48557,7 @@
             "description": "How grader verdicts determine the task-run outcome."
           },
           "harness_config": {
-            "$ref": "#/components/schemas/FoundryAgentHarness",
+            "$ref": "#/components/schemas/InlineFoundryAgentHarness",
             "description": "The harness and exact agent version used for task attempts."
           },
           "execution_config": {
@@ -48582,46 +48574,6 @@
             "description": "The immutable suite version.",
             "readOnly": true
           },
-          "harness_task_set": {
-            "$ref": "#/components/schemas/HarnessTaskSetReference",
-            "description": "The exact published HarnessTaskSet version to evaluate."
-          }
-        },
-        "description": "An immutable version of a reusable evaluation job definition.",
-        "x-ms-foundry-meta": {
-          "conditional_previews": [
-            "Evaluations=V1Preview"
-          ]
-        }
-      },
-      "EvalSuiteVersionCreate": {
-        "type": "object",
-        "required": [
-          "scoring",
-          "harness_config",
-          "execution_config",
-          "harness_task_set"
-        ],
-        "properties": {
-          "graders": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/InlineEvaluationGrader"
-            },
-            "description": "Graders applied to every task in the suite."
-          },
-          "scoring": {
-            "$ref": "#/components/schemas/ScoringRule",
-            "description": "How grader verdicts determine the task-run outcome."
-          },
-          "harness_config": {
-            "$ref": "#/components/schemas/FoundryAgentHarness",
-            "description": "The harness and exact agent version used for task attempts."
-          },
-          "execution_config": {
-            "$ref": "#/components/schemas/EvalExecutionConfig",
-            "description": "The execution mode and default attempt limits."
-          },
           "description": {
             "type": "string",
             "description": "The suite description."
@@ -48630,63 +48582,22 @@
             "$ref": "#/components/schemas/HarnessTaskSetReference",
             "description": "The exact published HarnessTaskSet version to evaluate."
           },
-          "tags": {
+          "metadata": {
             "type": "object",
             "unevaluatedProperties": {
               "type": "string"
             },
-            "description": "User-defined tags."
-          }
-        },
-        "description": "An immutable version of a reusable evaluation job definition.",
-        "x-ms-foundry-meta": {
-          "conditional_previews": [
-            "Evaluations=V1Preview"
-          ]
-        }
-      },
-      "EvalSuiteVersionCreateOrUpdate": {
-        "type": "object",
-        "required": [
-          "scoring",
-          "harness_config",
-          "execution_config",
-          "harness_task_set"
-        ],
-        "properties": {
-          "graders": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/InlineEvaluationGrader"
-            },
-            "description": "Graders applied to every task in the suite."
+            "description": "User-defined string labels for this suite version."
           },
-          "scoring": {
-            "$ref": "#/components/schemas/ScoringRule",
-            "description": "How grader verdicts determine the task-run outcome."
+          "created_at": {
+            "$ref": "#/components/schemas/FoundryTimestamp",
+            "description": "The time when this version was published.",
+            "readOnly": true
           },
-          "harness_config": {
-            "$ref": "#/components/schemas/FoundryAgentHarness",
-            "description": "The harness and exact agent version used for task attempts."
-          },
-          "execution_config": {
-            "$ref": "#/components/schemas/EvalExecutionConfig",
-            "description": "The execution mode and default attempt limits."
-          },
-          "description": {
+          "created_by": {
             "type": "string",
-            "description": "The suite description."
-          },
-          "harness_task_set": {
-            "$ref": "#/components/schemas/HarnessTaskSetReference",
-            "description": "The exact published HarnessTaskSet version to evaluate."
-          },
-          "tags": {
-            "type": "object",
-            "unevaluatedProperties": {
-              "type": "string"
-            },
-            "description": "User-defined tags."
+            "description": "The identity that published this version.",
+            "readOnly": true
           }
         },
         "description": "An immutable version of a reusable evaluation job definition.",
@@ -48764,13 +48675,11 @@
             "description": "The terminal task-run error, when execution or grading failed."
           },
           "started_at": {
-            "type": "string",
-            "format": "date-time",
+            "$ref": "#/components/schemas/FoundryTimestamp",
             "description": "The time when execution started."
           },
           "completed_at": {
-            "type": "string",
-            "format": "date-time",
+            "$ref": "#/components/schemas/FoundryTimestamp",
             "description": "The time when the task run reached a terminal state."
           }
         },
@@ -49225,7 +49134,7 @@
         "properties": {
           "name": {
             "type": "string",
-            "description": "The grader name, unique within its task or evaluation suite."
+            "description": "The grader name, unique among graders applicable to the same task."
           },
           "type": {
             "$ref": "#/components/schemas/EvaluationGraderType",
@@ -49327,7 +49236,7 @@
         "discriminator": {
           "propertyName": "type",
           "mapping": {
-            "foundry_agent": "#/components/schemas/FoundryAgentHarness"
+            "inline_foundry_agent_harness": "#/components/schemas/InlineFoundryAgentHarness"
           }
         },
         "description": "The harness used to execute evaluation tasks.",
@@ -49345,11 +49254,54 @@
           {
             "type": "string",
             "enum": [
-              "foundry_agent"
+              "inline_foundry_agent_harness"
             ]
           }
         ],
         "description": "The supported evaluation harness types.",
+        "x-ms-foundry-meta": {
+          "conditional_previews": [
+            "Evaluations=V1Preview"
+          ]
+        }
+      },
+      "EvaluationJsonContent": {
+        "type": "object",
+        "required": [
+          "type",
+          "value"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "json"
+            ],
+            "description": "Indicates JSON content."
+          },
+          "value": {
+            "description": "The JSON value."
+          }
+        },
+        "description": "JSON content supplied to a task or its graders.",
+        "x-ms-foundry-meta": {
+          "conditional_previews": [
+            "Evaluations=V1Preview"
+          ]
+        }
+      },
+      "EvaluationJudgeModelConfig": {
+        "type": "object",
+        "required": [
+          "model"
+        ],
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "The model to use when evaluating the grader."
+          }
+        },
+        "description": "The model chosen for one language-model grader.",
         "x-ms-foundry-meta": {
           "conditional_previews": [
             "Evaluations=V1Preview"
@@ -50479,6 +50431,29 @@
         ],
         "description": "Allowed types of evaluation targets."
       },
+      "EvaluationTaskContent": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "object",
+            "unevaluatedProperties": {}
+          },
+          {
+            "$ref": "#/components/schemas/EvaluationTextContent"
+          },
+          {
+            "$ref": "#/components/schemas/EvaluationJsonContent"
+          }
+        ],
+        "description": "Task content, including shorthand strings and JSON objects.",
+        "x-ms-foundry-meta": {
+          "conditional_previews": [
+            "Evaluations=V1Preview"
+          ]
+        }
+      },
       "EvaluationTaskRunAttempts": {
         "type": "object",
         "properties": {
@@ -50563,8 +50538,7 @@
             "description": "The exception type when available."
           },
           "occurred_at": {
-            "type": "string",
-            "format": "date-time",
+            "$ref": "#/components/schemas/FoundryTimestamp",
             "description": "The time when the failure occurred."
           },
           "retriable": {
@@ -50679,17 +50653,12 @@
       "EvaluationTaskSummary": {
         "type": "object",
         "required": [
-          "id",
-          "name"
+          "id"
         ],
         "properties": {
           "id": {
             "type": "string",
             "description": "The task identifier."
-          },
-          "name": {
-            "type": "string",
-            "description": "The task name."
           },
           "description": {
             "type": "string",
@@ -50899,6 +50868,32 @@
         "description": "Evaluation Taxonomy Definition",
         "x-ms-foundry-meta": {
           "required_previews": [
+            "Evaluations=V1Preview"
+          ]
+        }
+      },
+      "EvaluationTextContent": {
+        "type": "object",
+        "required": [
+          "type",
+          "value"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "text"
+            ],
+            "description": "Indicates text content."
+          },
+          "value": {
+            "type": "string",
+            "description": "The text value."
+          }
+        },
+        "description": "Text content supplied to a task or its graders.",
+        "x-ms-foundry-meta": {
+          "conditional_previews": [
             "Evaluations=V1Preview"
           ]
         }
@@ -52115,37 +52110,6 @@
         ],
         "description": "FileDatasetVersion Definition"
       },
-      "FoundryAgentHarness": {
-        "type": "object",
-        "required": [
-          "type",
-          "agent"
-        ],
-        "properties": {
-          "type": {
-            "type": "string",
-            "enum": [
-              "foundry_agent"
-            ],
-            "description": "Indicates that this harness invokes a Foundry agent."
-          },
-          "agent": {
-            "$ref": "#/components/schemas/FoundryAgentReference",
-            "description": "The exact agent version to invoke."
-          }
-        },
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/EvaluationHarness"
-          }
-        ],
-        "description": "A harness that invokes a versioned Foundry agent.",
-        "x-ms-foundry-meta": {
-          "conditional_previews": [
-            "Evaluations=V1Preview"
-          ]
-        }
-      },
       "FoundryAgentReference": {
         "type": "object",
         "required": [
@@ -52214,7 +52178,7 @@
             "readOnly": true
           },
           "resolved_harness_config": {
-            "$ref": "#/components/schemas/FoundryAgentHarness",
+            "$ref": "#/components/schemas/InlineFoundryAgentHarness",
             "description": "The effective harness and exact agent reference after run overrides.",
             "readOnly": true
           },
@@ -52224,20 +52188,17 @@
             "readOnly": true
           },
           "created_at": {
-            "type": "string",
-            "format": "date-time",
+            "$ref": "#/components/schemas/FoundryTimestamp",
             "description": "The time when the run was accepted.",
             "readOnly": true
           },
           "started_at": {
-            "type": "string",
-            "format": "date-time",
+            "$ref": "#/components/schemas/FoundryTimestamp",
             "description": "The time when execution started.",
             "readOnly": true
           },
           "completed_at": {
-            "type": "string",
-            "format": "date-time",
+            "$ref": "#/components/schemas/FoundryTimestamp",
             "description": "The time when the run reached a terminal state.",
             "readOnly": true
           }
@@ -52702,31 +52663,28 @@
         "type": "object",
         "required": [
           "id",
-          "name",
           "inputs"
         ],
         "properties": {
           "id": {
             "type": "string",
+            "minLength": 1,
             "description": "The task identifier, unique within the task-set version."
-          },
-          "name": {
-            "type": "string",
-            "description": "The human-readable task name."
           },
           "description": {
             "type": "string",
             "description": "A description of the behavior being evaluated."
           },
           "inputs": {
-            "type": "object",
-            "unevaluatedProperties": {},
-            "description": "The starting request or state provided to the harness."
+            "$ref": "#/components/schemas/PromptTaskInput",
+            "description": "The prompt and optional context provided to the agent."
           },
           "expected": {
             "type": "object",
-            "unevaluatedProperties": {},
-            "description": "Expected values available to deterministic and language-model graders."
+            "unevaluatedProperties": {
+              "$ref": "#/components/schemas/EvaluationTaskContent"
+            },
+            "description": "Reference values visible to graders but not to the agent."
           },
           "graders": {
             "type": "array",
@@ -52738,12 +52696,11 @@
           "metadata": {
             "type": "object",
             "unevaluatedProperties": {},
-            "description": "User-defined task metadata."
+            "description": "Caller-defined JSON annotations visible to graders."
           },
-          "steps": {
-            "type": "array",
-            "items": {},
-            "description": "Reserved for future multi-step tasks; rejected in the MVP."
+          "scoring": {
+            "$ref": "#/components/schemas/ScoringRule",
+            "description": "The rule used to combine task and suite grader verdicts for this task."
           }
         },
         "description": "A reusable evaluation task.",
@@ -52797,7 +52754,9 @@
         "required": [
           "name",
           "version",
-          "tasks"
+          "tasks",
+          "created_at",
+          "created_by"
         ],
         "properties": {
           "name": {
@@ -52810,28 +52769,6 @@
             "description": "The immutable task-set version.",
             "readOnly": true
           },
-          "tasks": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/HarnessTask"
-            },
-            "minItems": 1,
-            "description": "The tasks contained in this version."
-          }
-        },
-        "description": "An immutable version of a reusable evaluation task set.",
-        "x-ms-foundry-meta": {
-          "conditional_previews": [
-            "Evaluations=V1Preview"
-          ]
-        }
-      },
-      "HarnessTaskSetVersionCreate": {
-        "type": "object",
-        "required": [
-          "tasks"
-        ],
-        "properties": {
           "description": {
             "type": "string",
             "description": "The task-set description."
@@ -52844,45 +52781,22 @@
             "minItems": 1,
             "description": "The tasks contained in this version."
           },
-          "tags": {
+          "metadata": {
             "type": "object",
             "unevaluatedProperties": {
               "type": "string"
             },
-            "description": "User-defined tags."
-          }
-        },
-        "description": "An immutable version of a reusable evaluation task set.",
-        "x-ms-foundry-meta": {
-          "conditional_previews": [
-            "Evaluations=V1Preview"
-          ]
-        }
-      },
-      "HarnessTaskSetVersionCreateOrUpdate": {
-        "type": "object",
-        "required": [
-          "tasks"
-        ],
-        "properties": {
-          "description": {
+            "description": "User-defined string labels for this task-set version."
+          },
+          "created_at": {
+            "$ref": "#/components/schemas/FoundryTimestamp",
+            "description": "The time when this version was published.",
+            "readOnly": true
+          },
+          "created_by": {
             "type": "string",
-            "description": "The task-set description."
-          },
-          "tasks": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/HarnessTask"
-            },
-            "minItems": 1,
-            "description": "The tasks contained in this version."
-          },
-          "tags": {
-            "type": "object",
-            "unevaluatedProperties": {
-              "type": "string"
-            },
-            "description": "User-defined tags."
+            "description": "The identity that published this version.",
+            "readOnly": true
           }
         },
         "description": "An immutable version of a reusable evaluation task set.",
@@ -53271,7 +53185,7 @@
             "description": "How grader verdicts determine the task-run outcome."
           },
           "harness_config": {
-            "$ref": "#/components/schemas/FoundryAgentHarness",
+            "$ref": "#/components/schemas/InlineFoundryAgentHarness",
             "description": "The harness and exact agent version used for task attempts."
           },
           "execution_config": {
@@ -53300,6 +53214,37 @@
           }
         ],
         "description": "The inline graders supported by the evaluation MVP.",
+        "x-ms-foundry-meta": {
+          "conditional_previews": [
+            "Evaluations=V1Preview"
+          ]
+        }
+      },
+      "InlineFoundryAgentHarness": {
+        "type": "object",
+        "required": [
+          "type",
+          "agent"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "inline_foundry_agent_harness"
+            ],
+            "description": "Indicates an inline Foundry-agent harness."
+          },
+          "agent": {
+            "$ref": "#/components/schemas/FoundryAgentReference",
+            "description": "The exact agent version to invoke."
+          }
+        },
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/EvaluationHarness"
+          }
+        ],
+        "description": "An inline harness that invokes a versioned Foundry agent.",
         "x-ms-foundry-meta": {
           "conditional_previews": [
             "Evaluations=V1Preview"
@@ -53976,7 +53921,7 @@
         "type": "object",
         "required": [
           "type",
-          "model_deployment",
+          "model_config",
           "criteria"
         ],
         "properties": {
@@ -53987,9 +53932,9 @@
             ],
             "description": "Indicates that this grader uses a language model."
           },
-          "model_deployment": {
-            "type": "string",
-            "description": "The model deployment used by the judge."
+          "model_config": {
+            "$ref": "#/components/schemas/EvaluationJudgeModelConfig",
+            "description": "The model selected to judge this grader."
           },
           "criteria": {
             "type": "array",
@@ -95885,6 +95830,40 @@
         ],
         "description": "Configuration for a one-shot prompt transformation without comparative evaluation."
       },
+      "PromptTaskInput": {
+        "type": "object",
+        "required": [
+          "type",
+          "instruction"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "prompt"
+            ],
+            "description": "Indicates a single prompt invocation."
+          },
+          "instruction": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The prompt delivered to the agent."
+          },
+          "data": {
+            "type": "object",
+            "unevaluatedProperties": {
+              "$ref": "#/components/schemas/EvaluationTaskContent"
+            },
+            "description": "Additional named context visible to the agent."
+          }
+        },
+        "description": "The single-prompt input mode supported in the MVP.",
+        "x-ms-foundry-meta": {
+          "conditional_previews": [
+            "Evaluations=V1Preview"
+          ]
+        }
+      },
       "ProtocolConfiguration": {
         "type": "object",
         "properties": {
@@ -97497,10 +97476,10 @@
             "enum": [
               "all_pass"
             ],
-            "description": "The task passes only when every applicable grader passes."
+            "description": "A task run passes only when every applicable grader passes."
           }
         },
-        "description": "The MVP rule for combining grader verdicts.",
+        "description": "The rule for combining applicable grader verdicts.",
         "x-ms-foundry-meta": {
           "conditional_previews": [
             "Evaluations=V1Preview"

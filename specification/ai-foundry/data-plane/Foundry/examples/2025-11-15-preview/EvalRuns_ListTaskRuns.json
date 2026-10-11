@@ -15,8 +15,7 @@
             "id": "taskrun_01J9Z7K81M",
             "eval_run_id": "evalrun_01J9Z7F6J2",
             "task": {
-              "id": "covered-water-damage",
-              "name": "Covered water damage"
+              "id": "covered-water-damage"
             },
             "repetition": 2,
             "status": "succeeded",

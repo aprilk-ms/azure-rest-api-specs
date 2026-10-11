@@ -11,9 +11,9 @@
             "tasks": [
               {
                 "id": "covered-water-damage",
-                "name": "Covered water damage",
                 "inputs": {
-                  "text": "Review claim 12345 and cite the applicable policy."
+                  "type": "prompt",
+                  "instruction": "Review claim 12345 and cite the applicable policy."
                 },
                 "expected": {
                   "decision": "approved"
@@ -36,7 +36,7 @@
             "aggregation": "all_pass"
           },
           "harness_config": {
-            "type": "foundry_agent",
+            "type": "inline_foundry_agent_harness",
             "agent": {
               "name": "claims-agent",
               "version": "7"
@@ -64,9 +64,9 @@
               "tasks": [
                 {
                   "id": "covered-water-damage",
-                  "name": "Covered water damage",
                   "inputs": {
-                    "text": "Review claim 12345 and cite the applicable policy."
+                    "type": "prompt",
+                    "instruction": "Review claim 12345 and cite the applicable policy."
                   },
                   "expected": {
                     "decision": "approved"
@@ -89,7 +89,7 @@
               "aggregation": "all_pass"
             },
             "harness_config": {
-              "type": "foundry_agent",
+              "type": "inline_foundry_agent_harness",
               "agent": {
                 "name": "claims-agent",
                 "version": "7"
@@ -101,7 +101,7 @@
           }
         },
         "resolved_harness_config": {
-          "type": "foundry_agent",
+          "type": "inline_foundry_agent_harness",
           "agent": {
             "name": "claims-agent",
             "version": "7"
@@ -110,7 +110,7 @@
         "resolved_execution_config": {
           "type": "harness_invocation"
         },
-        "created_at": "2026-10-09T05:40:00Z"
+        "created_at": 1791524400
       }
     }
   }

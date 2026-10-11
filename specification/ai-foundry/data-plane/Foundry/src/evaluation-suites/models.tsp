@@ -194,21 +194,17 @@ model EvalSuiteReference {
   version: string;
 }
 
-/** The MVP rule for combining grader verdicts. */
-@extension("x-ms-foundry-meta", EvaluationServiceV2RequiredPreviews)
-model ScoringRule {
-  /** The task passes only when every applicable grader passes. */
-  aggregation: EvaluationAggregation.all_pass;
-}
-
 /** Configuration replacements applied only to a run of a published suite. */
 @extension("x-ms-foundry-meta", EvaluationServiceV2RequiredPreviews)
 model EvalSuiteConfigOverrides {
   /** A complete harness and exact agent reference replacing the suite's harness. */
-  harness_config?: FoundryAgentHarness;
+  harness_config?: InlineFoundryAgentHarness;
 
   /** Execution fields to replace; omitted fields inherit the suite defaults. */
   execution_config?: EvalExecutionConfigOverrides;
+
+  /** Another exact version of the same HarnessTaskSet used by the published suite. */
+  harness_task_set?: HarnessTaskSetReference;
 }
 
 /** Shared grading and execution settings for published and inline EvalSuites. */
@@ -221,7 +217,7 @@ model EvalSuiteDefinition {
   scoring: ScoringRule;
 
   /** The harness and exact agent version used for task attempts. */
-  harness_config: FoundryAgentHarness;
+  harness_config: InlineFoundryAgentHarness;
 
   /** The execution mode and default attempt limits. */
   execution_config: EvalExecutionConfig;
@@ -245,15 +241,23 @@ model EvalSuiteVersion {
   version: string;
 
   /** The suite description. */
-  @visibility(Lifecycle.Create, Lifecycle.Update)
+  @visibility(Lifecycle.Create, Lifecycle.Read, Lifecycle.Update)
   description?: string;
 
   /** The exact published HarnessTaskSet version to evaluate. */
   harness_task_set: HarnessTaskSetReference;
 
-  /** User-defined tags. */
-  @visibility(Lifecycle.Create, Lifecycle.Update)
-  tags?: Record<string>;
+  /** User-defined string labels for this suite version. */
+  @visibility(Lifecycle.Create, Lifecycle.Read, Lifecycle.Update)
+  metadata?: Record<string>;
+
+  /** The time when this version was published. */
+  @visibility(Lifecycle.Read)
+  created_at: FoundryTimestamp;
+
+  /** The identity that published this version. */
+  @visibility(Lifecycle.Read)
+  created_by: string;
 }
 
 /** A complete one-off suite definition that is retained only with the run. */

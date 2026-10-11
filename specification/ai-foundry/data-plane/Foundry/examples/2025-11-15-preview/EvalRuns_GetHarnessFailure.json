@@ -13,8 +13,7 @@
         "id": "taskrun_01J9Z7N4DH",
         "eval_run_id": "evalrun_01J9Z7F6J2",
         "task": {
-          "id": "covered-water-damage",
-          "name": "Covered water damage"
+          "id": "covered-water-damage"
         },
         "repetition": 3,
         "status": "failed",
@@ -39,8 +38,8 @@
           "retriable": true,
           "artifact_ids": ["artifact_01J9Z7N8JK"]
         },
-        "started_at": "2026-10-09T05:40:22Z",
-        "completed_at": "2026-10-09T05:41:18Z"
+        "started_at": 1791524422,
+        "completed_at": 1791524478
       }
     }
   }

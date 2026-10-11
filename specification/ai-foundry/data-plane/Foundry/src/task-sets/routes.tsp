@@ -28,7 +28,24 @@ interface HarnessTaskSets {
     AgentsPagedResult<HarnessTaskSetVersion>
   >;
 
-  /** Creates a task-set version with a service-generated version identifier. */
+  /** Creates a task set if absent, or appends a version only when its complete definition changes. */
+  @summary("Reconcile a harness task set")
+  @post
+  @route("/harness_task_sets/{name}")
+  @extension("x-ms-foundry-meta", EvaluationServiceV2RequiredPreviews)
+  reconcile is FoundryDataPlanePreviewOperation<
+    FoundryFeaturesOptInKeys.evaluations_v1_preview,
+    {
+      /** The stable task-set name. */
+      @path name: string;
+
+      /** The complete definition to publish if changed. */
+      @bodyRoot task_set: HarnessTaskSetVersion;
+    },
+    Foundations.ResourceCreatedOrOkResponse<HarnessTaskSetVersion>
+  >;
+
+  /** Always appends a task-set version with a service-assigned identifier. */
   @summary("Create a harness task-set version")
   @post
   @route("/harness_task_sets/{name}/versions")
@@ -43,26 +60,6 @@ interface HarnessTaskSets {
       @bodyRoot task_set: HarnessTaskSetVersion;
     },
     Response<201> & HarnessTaskSetVersion
-  >;
-
-  /** Creates an explicitly versioned task set or verifies that an existing version has the same definition. */
-  @summary("Create or verify a harness task-set version")
-  @put
-  @route("/harness_task_sets/{name}/versions/{version}")
-  @extension("x-ms-foundry-meta", EvaluationServiceV2RequiredPreviews)
-  createOrReplaceVersion is FoundryDataPlanePreviewOperation<
-    FoundryFeaturesOptInKeys.evaluations_v1_preview,
-    {
-      /** The task-set name. */
-      @path name: string;
-
-      /** The exact version identifier. */
-      @path version: string;
-
-      /** The task-set version to create or reconcile. */
-      @bodyRoot task_set: HarnessTaskSetVersion;
-    },
-    Foundations.ResourceCreatedOrOkResponse<HarnessTaskSetVersion>
   >;
 
   /** Lists all versions of a task set. */

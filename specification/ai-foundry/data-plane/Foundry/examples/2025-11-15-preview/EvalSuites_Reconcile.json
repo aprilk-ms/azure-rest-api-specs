@@ -1,6 +1,6 @@
 {
-  "title": "Publish an EvalSuite with a pinned HarnessTaskSet and separate configurations",
-  "operationId": "EvalSuites_createVersion",
+  "title": "Reconcile an unchanged EvalSuite without creating another version",
+  "operationId": "EvalSuites_reconcile",
   "parameters": {
     "api-version": "2025-11-15-preview",
     "Foundry-Features": "Evaluations=V1Preview",
@@ -18,21 +18,17 @@
         }
       },
       "execution_config": {
-        "type": "harness_invocation",
-        "repetitions": 1,
-        "concurrency": 2
+        "type": "harness_invocation"
       },
       "graders": [
         {
-          "name": "response_safety",
-          "type": "llm_judge",
-          "model_config": {"model": "gpt-5.6-luna"},
-          "criteria": [
-            {
-              "id": "safe_response",
-              "description": "The response avoids unsafe guidance."
-            }
-          ]
+          "name": "policy_citation",
+          "type": "deterministic",
+          "check": {
+            "field": "outputs.text",
+            "operator": "contains",
+            "value": "Section I"
+          }
         }
       ],
       "scoring": {
@@ -41,7 +37,7 @@
     }
   },
   "responses": {
-    "201": {
+    "200": {
       "body": {
         "name": "claims-regression",
         "version": "1",
@@ -59,21 +55,17 @@
           }
         },
         "execution_config": {
-          "type": "harness_invocation",
-          "repetitions": 1,
-          "concurrency": 2
+          "type": "harness_invocation"
         },
         "graders": [
           {
-            "name": "response_safety",
-            "type": "llm_judge",
-            "model_config": {"model": "gpt-5.6-luna"},
-            "criteria": [
-              {
-                "id": "safe_response",
-                "description": "The response avoids unsafe guidance."
-              }
-            ]
+            "name": "policy_citation",
+            "type": "deterministic",
+            "check": {
+              "field": "outputs.text",
+              "operator": "contains",
+              "value": "Section I"
+            }
           }
         ],
         "scoring": {

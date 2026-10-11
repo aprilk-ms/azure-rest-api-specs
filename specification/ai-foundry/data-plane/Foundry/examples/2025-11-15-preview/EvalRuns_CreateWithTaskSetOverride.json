@@ -1,10 +1,9 @@
 {
-  "title": "Run a published EvalSuite with execution overrides",
+  "title": "Run the same EvalSuite with another version of its HarnessTaskSet",
   "operationId": "EvalRuns_create",
   "parameters": {
     "api-version": "2025-11-15-preview",
     "Foundry-Features": "Evaluations=V1Preview",
-    "Operation-Id": "9142f058-b4b6-425d-84ec-1bbf445a08a0",
     "body": {
       "inputs": {
         "suite": {
@@ -15,17 +14,6 @@
           "harness_task_set": {
             "name": "claims-regression",
             "version": "2"
-          },
-          "harness_config": {
-            "type": "inline_foundry_agent_harness",
-            "agent": {
-              "name": "claims-agent",
-              "version": "8"
-            }
-          },
-          "execution_config": {
-            "repetitions": 3,
-            "concurrency": 3
           }
         }
       }
@@ -34,11 +22,11 @@
   "responses": {
     "201": {
       "headers": {
-        "Operation-Location": "/eval_runs/evalrun_01J9Z7F6J2",
-        "Location": "/eval_runs/evalrun_01J9Z7F6J2"
+        "Operation-Location": "/eval_runs/evalrun_01J9Z8A3KD",
+        "Location": "/eval_runs/evalrun_01J9Z8A3KD"
       },
       "body": {
-        "id": "evalrun_01J9Z7F6J2",
+        "id": "evalrun_01J9Z8A3KD",
         "status": "queued",
         "inputs": {
           "suite": {
@@ -49,17 +37,6 @@
             "harness_task_set": {
               "name": "claims-regression",
               "version": "2"
-            },
-            "harness_config": {
-              "type": "inline_foundry_agent_harness",
-              "agent": {
-                "name": "claims-agent",
-                "version": "8"
-              }
-            },
-            "execution_config": {
-              "repetitions": 3,
-              "concurrency": 3
             }
           }
         },
@@ -67,13 +44,13 @@
           "type": "inline_foundry_agent_harness",
           "agent": {
             "name": "claims-agent",
-            "version": "8"
+            "version": "7"
           }
         },
         "resolved_execution_config": {
           "type": "harness_invocation",
-          "repetitions": 3,
-          "concurrency": 3
+          "repetitions": 1,
+          "concurrency": 2
         },
         "created_at": 1791524400
       }
